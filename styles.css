@@ -1,0 +1,288 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.dashboard-header {
+  text-align: center;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #3498db, #2c3e50);
+  color: white;
+}
+.dashboard-header h1 {
+  margin-bottom: 10px;
+  font-size: 32px;
+}
+.dashboard-header p {
+  font-size: 18px;
+  opacity: 0.9;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+.tab-button {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  padding: 12px 20px;
+  margin: 5px;
+  transition: all 0.3s;
+  font-size: 16px;
+  border-radius: 8px;
+}
+.tab-button:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+}
+.tab-button.active {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+.tab-content {
+  display: none;
+  padding: 25px;
+  animation: fadeIn 0.5s;
+}
+.tab-content.active {
+  display: block;
+}
+.plot-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+.plot-description {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #666;
+}
+.visualization-frame {
+  width: 100%;
+  height: 700px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Add right margin for legends */
+  padding-right: 20px;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.dashboard-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+  padding: 15px;
+}
+.dashboard-navigation button {
+  padding: 12px 25px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dashboard-navigation button:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+}
+.search-container {
+  margin: 20px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+#searchInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.dashboard-overview {
+  margin: 20px;
+  padding: 25px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border-left: 5px solid #3498db;
+}
+.dashboard-overview h2 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+.dashboard-overview p {
+  margin-bottom: 15px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+.category-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+.category-button:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+}
+.category-button.active {
+  background: #1abc9c;
+}
+.visualization-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+.visualization-link {
+  padding: 15px;
+  background: #ffffff;
+  border-radius: 8px;
+  border-left: 3px solid #3498db;
+  transition: all 0.3s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+.visualization-link:hover {
+  background: #f8f9fa;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.visualization-link a {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  display: block;
+  margin-bottom: 8px;
+}
+.visualization-link p {
+  color: #7f8c8d;
+  margin-bottom: 0;
+}
+.legend-fix-note {
+  background-color: #e3f2fd;
+  border-left: 3px solid #2196f3;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+.legend-fix-note:before {
+  content: "ℹ️";
+  margin-right: 8px;
+  font-size: 16px;
+}
+.no-results {
+  padding: 15px;
+  background-color: #fef0f0;
+  color: #e74c3c;
+  border-radius: 8px;
+  text-align: center;
+  display: none;
+  margin-top: 10px;
+}
+
+/* Fixes for specific visualization types */
+.tab-content[id*="channel"],
+.tab-content[id*="classification"],
+.tab-content[id*="pattern"] {
+  /* These visualizations need more room for legends */
+  padding-right: 40px;
+}
+
+/* Toggle button for legends in complex visualizations */
+.legend-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 6px 12px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+/* Enhanced styling for legends */
+.legend-toolbar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+  z-index: 1000;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+  .tab-button {
+    flex-basis: calc(50% - 10px);
+  }
+  .visualization-frame {
+    height: 500px;
+  }
+  /* Special handling for smaller screens */
+  .legend-fix-note {
+    font-size: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .tab-button {
+    flex-basis: 100%;
+  }
+  .visualization-frame {
+    height: 400px;
+  }
+}
