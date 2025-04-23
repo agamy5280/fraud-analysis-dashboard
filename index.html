@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+    />
+    <title>Enhanced Fraud Analysis Dashboard</title>
+    <style>
+      /* Dashboard Styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .dashboard-header {
+        text-align: center;
+        padding: 30px 20px;
+        background: linear-gradient(135deg, #3498db, #2c3e50);
+        color: white;
+      }
+      .dashboard-header h1 {
+        margin-bottom: 10px;
+        font-size: 32px;
+      }
+      .dashboard-header p {
+        font-size: 18px;
+        opacity: 0.9;
+      }
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #ddd;
+      }
+      .tab-button {
+        background: #ffffff;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        padding: 12px 20px;
+        margin: 5px;
+        transition: all 0.3s;
+        font-size: 16px;
+        border-radius: 8px;
+      }
+      .tab-button:hover {
+        background: #e9ecef;
+        transform: translateY(-2px);
+      }
+      .tab-button.active {
+        background: #3498db;
+        color: white;
+        border-color: #3498db;
+      }
+      .tab-content {
+        display: none;
+        padding: 25px;
+        animation: fadeIn 0.5s;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .plot-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+      .plot-description {
+        margin-bottom: 15px;
+        font-size: 16px;
+        color: #666;
+      }
+      .visualization-frame {
+        width: 100%;
+        height: 700px;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        /* Add right margin for legends */
+        padding-right: 20px;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .dashboard-navigation {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin: 20px 0;
+        padding: 15px;
+      }
+      .dashboard-navigation button {
+        padding: 12px 25px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .dashboard-navigation button:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+      }
+      .search-container {
+        margin: 20px;
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      #searchInput {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+      .dashboard-overview {
+        margin: 20px;
+        padding: 25px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        border-left: 5px solid #3498db;
+      }
+      .dashboard-overview h2 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 24px;
+      }
+      .dashboard-overview p {
+        margin-bottom: 15px;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .categories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 20px 0;
+      }
+      .category-button {
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 14px;
+      }
+      .category-button:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+      }
+      .category-button.active {
+        background: #1abc9c;
+      }
+      .visualization-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+      .visualization-link {
+        padding: 15px;
+        background: #ffffff;
+        border-radius: 8px;
+        border-left: 3px solid #3498db;
+        transition: all 0.3s;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+      .visualization-link:hover {
+        background: #f8f9fa;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .visualization-link a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 18px;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .visualization-link p {
+        color: #7f8c8d;
+        margin-bottom: 0;
+      }
+      footer {
+        text-align: center;
+        padding: 25px;
+        color: #7f8c8d;
+        border-top: 1px solid #ddd;
+        margin-top: 40px;
+        background: #f8f9fa;
+      }
+      .legend-fix-note {
+        background-color: #e3f2fd;
+        border-left: 3px solid #2196f3;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+      }
+      .legend-fix-note:before {
+        content: "ℹ️";
+        margin-right: 8px;
+        font-size: 16px;
+      }
+      .no-results {
+        padding: 15px;
+        background-color: #fef0f0;
+        color: #e74c3c;
+        border-radius: 8px;
+        text-align: center;
+        display: none;
+        margin-top: 10px;
+      }
+
+      /* Fixes for specific visualization types */
+      .tab-content[id*="channel"],
+      .tab-content[id*="classification"],
+      .tab-content[id*="pattern"] {
+        /* These visualizations need more room for legends */
+        padding-right: 40px;
+      }
+
+      /* Toggle button for legends in complex visualizations */
+      .legend-toggle {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 6px 12px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      /* Enhanced styling for legends */
+      .legend-toolbar {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 5px;
+        z-index: 1000;
+      }
+
+      /* Media queries for responsiveness */
+      @media (max-width: 768px) {
+        .tab-button {
+          flex-basis: calc(50% - 10px);
+        }
+        .visualization-frame {
+          height: 500px;
+        }
+        /* Special handling for smaller screens */
+        .legend-fix-note {
+          font-size: 12px;
+        }
+      }
+      @media (max-width: 480px) {
+        .tab-button {
+          flex-basis: 100%;
+        }
+        .visualization-frame {
+          height: 400px;
+        }
+      }
+      /* Loading spinner styles */
+      .spinner-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.85);
+        z-index: 10;
+        transition: opacity 0.5s ease;
+      }
+
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(52, 152, 219, 0.2);
+        border-radius: 50%;
+        border-top-color: #3498db;
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 15px;
+      }
+
+      .loading-text {
+        color: #3498db;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .fade-out {
+        opacity: 0;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Position adjustments for spinner */
+      .visualization-frame {
+        position: relative;
+        transition: opacity 0.5s ease;
+      }
+
+      .tab-content {
+        position: relative;
+      }
+      /* Page Loader Styles */
+      .page-loader-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.95);
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+
+      .page-spinner {
+        width: 80px;
+        height: 80px;
+        border: 8px solid rgba(52, 152, 219, 0.2);
+        border-radius: 50%;
+        border-top-color: #3498db;
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 20px;
+      }
+
+      .page-loading-text {
+        color: #3498db;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .progress-counter {
+        font-size: 18px;
+        color: #2c3e50;
+        font-weight: bold;
+      }
+
+      .fade-out {
+        opacity: 0;
+      }
+      /* Styles for the category indicator and reset button */
+      .current-category-indicator {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        margin: 10px 0 15px 0;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        border-left: 3px solid #3498db;
+      }
+
+      .category-label {
+        font-size: 16px;
+        font-weight: 500;
+        color: #2c3e50;
+      }
+
+      .category-reset-button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        display: none; /* Initially hidden */
+      }
+
+      .category-reset-button:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <script src="page-loader.js"></script>
+    <div class="dashboard-container">
+      <div class="dashboard-header">
+        <h1>Enhanced Fraud Analysis Dashboard</h1>
+        <p>
+          Interactive visualizations of fraud patterns and trends with improved
+          legend handling
+        </p>
+      </div>
+
+      <div class="dashboard-overview">
+        <h2>Dashboard Overview</h2>
+        <p>
+          This interactive dashboard presents a comprehensive analysis of fraud
+          patterns and trends based on the detailed data analysis. Navigate
+          through different visualizations using the tabs below.
+        </p>
+        <p>
+          Key insights include fraud patterns by channel, time analysis,
+          transaction types, and geographic distribution. Legends and
+          visualization elements are now fully interactive - click and drag to
+          reposition them if needed.
+        </p>
+
+        <div class="categories">
+          <button
+            class="category-button active"
+            onclick="filterByCategory('all')"
+          >
+            All
+          </button>
+          <button
+            class="category-button"
+            onclick="filterByCategory('overview')"
+          >
+            Overview
+          </button>
+          <button class="category-button" onclick="filterByCategory('channel')">
+            Channel Analysis
+          </button>
+          <button
+            class="category-button"
+            onclick="filterByCategory('transaction')"
+          >
+            Transaction Analysis
+          </button>
+          <button class="category-button" onclick="filterByCategory('time')">
+            Time Analysis
+          </button>
+          <button
+            class="category-button"
+            onclick="filterByCategory('demographics')"
+          >
+            Demographics
+          </button>
+          <button
+            class="category-button"
+            onclick="filterByCategory('comparison')"
+          >
+            Comparisons
+          </button>
+        </div>
+
+        <div class="visualization-links">
+          <!-- Links will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <div class="search-container">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search visualizations..."
+          onkeyup="searchVisualizations()"
+        />
+        <div class="no-results" id="noResults">
+          No visualizations found matching your search.
+        </div>
+      </div>
+
+      <div class="tabs">
+        <!-- Tab buttons will be populated by JavaScript -->
+      </div>
+
+      <div class="tab-contents">
+        <!-- Tab contents will be populated by JavaScript -->
+      </div>
+
+      <div class="dashboard-navigation">
+        <button id="prevTab" onclick="navigateTabs(-1)">
+          <span>❮</span> Previous
+        </button>
+        <button id="nextTab" onclick="navigateTabs(1)">
+          Next <span>❯</span>
+        </button>
+      </div>
+    </div>
+    <script src="combine.js"></script>
+  </body>
+</html>
